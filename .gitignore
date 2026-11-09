@@ -1,0 +1,22 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+data/raw/*.csv
+data/raw/*.parquet
+data/raw/*.zip
+data/processed/*.parquet
+artifacts/oof/*.npy
+artifacts/test/*.npy
+submissions/*.csv
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!artifacts/oof/.gitkeep
+!artifacts/test/.gitkeep
+!submissions/.gitkeep
+.env
+kaggle.json
+.pytest_cache/
+Review competition terms and condit.txt
+
