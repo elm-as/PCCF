@@ -7,3 +7,4 @@ xgboost>=2.0.0
 catboost>=1.2.0
 kagglehub>=0.3.10
 pytest>=8.0.0
+

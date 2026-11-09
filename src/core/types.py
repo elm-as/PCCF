@@ -63,3 +63,4 @@ class EnsembleBlendResult:
     rank_logit_oof_auc: float
     conservative_test_predictions: np.ndarray
     rank_logit_test_predictions: np.ndarray
+

@@ -44,17 +44,35 @@ def execute_training_pipeline(
     Returns:
         Tuple of (model_artifacts, ensemble_result, submission_audit_report).
     """
+    print("=" * 72, flush=True)
+    print(" PCCF: Predicting Credit Card Fraud (Kaggle Playground S6E11)", flush=True)
+    print(" ElmasCore Production Pipeline | Target Metric: ROC-AUC", flush=True)
+    print("=" * 72, flush=True)
+
+    print("\n[1/5] Acquiring and loading datasets...", flush=True)
     train_path, test_path = _acquire_dataset_paths(config, use_synthetic_fallback)
+    print(f"    - Train path: {train_path}", flush=True)
+    print(f"    - Test path:  {test_path}", flush=True)
     raw_train = pd.read_csv(train_path)
     raw_test = pd.read_csv(test_path)
+    print(f"    - Loaded train shape: {raw_train.shape}, test shape: {raw_test.shape}", flush=True)
 
+    print("\n[2/5] Optimizing memory & building domain features...", flush=True)
     base_bundle = build_optimized_dataset_bundle(raw_train, raw_test, config.validation)
+    print("    - Base memory optimization complete.", flush=True)
     engineered_bundle, te_cols = _apply_feature_engineering(base_bundle)
+    print(f"    - Feature engineering complete: {engineered_bundle.train_features.shape[1]} features", flush=True)
+    print(f"    - Target-encoded columns: {len(te_cols)} features", flush=True)
 
+    print(f"\n[3/5] Starting {config.validation.n_splits}-fold Stratified Cross-Validation...", flush=True)
     artifacts = run_cross_validation_suite(engineered_bundle, te_cols, config)
+
+    print("\n[4/5] Optimizing Nelder-Mead ensemble blend weights...", flush=True)
     blend_result = optimize_ensemble_blends(
         artifacts, engineered_bundle.train_target.to_numpy()
     )
+
+    print("\n[5/5] Exporting dual submissions (Conservative & Rank-Logit)...", flush=True)
     audit_report = export_dual_submissions(
         engineered_bundle.test_ids, blend_result, config
     )
@@ -155,9 +173,11 @@ if __name__ == "__main__":
     if args.fast_smoke:
         cfg = replace(
             cfg,
-            lgbm=replace(cfg.lgbm, n_estimators=300, early_stopping_rounds=30),
-            catboost=replace(cfg.catboost, iterations=300, early_stopping_rounds=30),
-            xgboost=replace(cfg.xgboost, n_estimators=300, early_stopping_rounds=30),
+            validation=replace(cfg.validation, n_splits=2),
+            lgbm=replace(cfg.lgbm, n_estimators=200, early_stopping_rounds=20),
+            catboost=replace(cfg.catboost, iterations=200, early_stopping_rounds=20),
+            xgboost=replace(cfg.xgboost, n_estimators=200, early_stopping_rounds=20),
         )
 
     execute_training_pipeline(cfg, use_synthetic_fallback=args.verify_synthetic)
+

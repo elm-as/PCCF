@@ -88,14 +88,20 @@ def run_cross_validation_suite(
     fold_scores: dict[str, list[float]] = {name: [] for name in MODEL_NAMES}
 
     for fold in folds:
+        print(f"\n[*] Processing Fold {fold.fold_index + 1}/{n_splits}...", flush=True)
         encoded = encode_fold_without_leakage(fold, target_encode_cols, config.validation)
+        print(f"    - Leak-free OOF Target Encoding complete (features: {encoded.x_train_encoded.shape[1]})", flush=True)
         fold_outputs = _train_all_models_on_fold(encoded, (fold.y_train, fold.y_val), config)
 
+        fold_scores_log = []
         for name, (val_pred, test_pred) in fold_outputs.items():
             oof_buffers[name][fold.val_indices] = val_pred
             test_buffers[name] += test_pred / float(n_splits)
             score = compute_roc_auc_score(fold.y_val.to_numpy(), val_pred)
             fold_scores[name].append(score)
+            fold_scores_log.append(f"{name}: {score:.5f}")
+
+        print(f"    - Fold {fold.fold_index + 1} validation scores: {' | '.join(fold_scores_log)}", flush=True)
 
     return _build_and_save_artifacts(
         (oof_buffers, test_buffers, fold_scores),
@@ -111,11 +117,23 @@ def _train_all_models_on_fold(
 ) -> dict[str, tuple[np.ndarray, np.ndarray]]:
     """Run all four model families on a single encoded fold."""
     y_train, y_val = targets
+    print("      -> Training Spline-GLM baseline...", flush=True)
+    spline_pred = train_and_predict_spline_glm(encoded, y_train, config.linear)
+
+    print("      -> Training LightGBM shallow...", flush=True)
+    lgbm_pred = train_and_predict_lightgbm_shallow(encoded, (y_train, y_val), config.lgbm)
+
+    print("      -> Training CatBoost shallow...", flush=True)
+    cat_pred = train_and_predict_catboost_shallow(encoded, (y_train, y_val), config.catboost)
+
+    print("      -> Training XGBoost shallow...", flush=True)
+    xgb_pred = train_and_predict_xgboost_shallow(encoded, (y_train, y_val), config.xgboost)
+
     return {
-        "spline_glm": train_and_predict_spline_glm(encoded, y_train, config.linear),
-        "lightgbm_shallow": train_and_predict_lightgbm_shallow(encoded, (y_train, y_val), config.lgbm),
-        "catboost_shallow": train_and_predict_catboost_shallow(encoded, (y_train, y_val), config.catboost),
-        "xgboost_shallow": train_and_predict_xgboost_shallow(encoded, (y_train, y_val), config.xgboost),
+        "spline_glm": spline_pred,
+        "lightgbm_shallow": lgbm_pred,
+        "catboost_shallow": cat_pred,
+        "xgboost_shallow": xgb_pred,
     }
 
 
@@ -152,3 +170,4 @@ def _build_and_save_artifacts(
             )
         )
     return tuple(artifacts)
+

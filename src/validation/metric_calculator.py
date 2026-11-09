@@ -29,3 +29,4 @@ def compute_roc_auc_score(y_true: np.ndarray, y_probabilities: np.ndarray) -> fl
         raise ValueError("Cannot compute ROC-AUC when y_true contains fewer than 2 classes.")
 
     return float(roc_auc_score(y_true, y_probabilities))
+

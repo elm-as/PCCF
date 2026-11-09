@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import RobustScaler, SplineTransformer
+from sklearn.preprocessing import StandardScaler
 
 from src.core.config import LinearAdditiveConfig
 from src.feature_engineering.cross_fitted_encoder import EncodedFoldMatrices
@@ -22,12 +22,12 @@ def train_and_predict_spline_glm(
     y_train: pd.Series,
     config: LinearAdditiveConfig,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Fit a B-Spline regularized Logistic Regression on fold training data.
+    """Fit a regularized Logistic Regression GLM baseline on fold training data.
 
     Args:
         encoded_fold: Leak-free encoded train, validation, and test feature matrices.
         y_train: Binary target series for the training fold.
-        config: Hyperparameters for spline knots, degree, and L2 regularization.
+        config: Hyperparameters for regularization and convergence.
 
     Returns:
         Tuple of (val_probabilities, test_probabilities) as 1D float64 numpy arrays.
@@ -43,20 +43,13 @@ def train_and_predict_spline_glm(
     x_te = _sanitize_numeric_array(encoded_fold.x_test_encoded[continuous_cols])
 
     pipeline = Pipeline([
-        ("scaler", RobustScaler()),
-        (
-            "splines",
-            SplineTransformer(
-                n_knots=config.n_knots,
-                degree=config.spline_degree,
-                include_bias=False,
-            ),
-        ),
+        ("scaler", StandardScaler()),
         (
             "glm",
             LogisticRegression(
                 C=config.inverse_regularization_c,
                 max_iter=config.max_iter,
+                solver="lbfgs",
                 random_state=config.random_seed,
             ),
         ),
@@ -72,3 +65,4 @@ def _sanitize_numeric_array(df: pd.DataFrame) -> np.ndarray:
     """Convert DataFrame to finite float32 numpy array, replacing any NaN/Inf with 0."""
     arr = df.to_numpy(dtype=np.float32, copy=True)
     return np.nan_to_num(arr, nan=0.0, posinf=0.0, neginf=0.0)
+

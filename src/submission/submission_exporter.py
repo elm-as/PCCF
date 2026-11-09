@@ -79,3 +79,4 @@ def _compute_quantiles(predictions: np.ndarray) -> dict[str, float]:
         "p95": float(q_vals[4]),
         "max": float(q_vals[5]),
     }
+

@@ -145,3 +145,4 @@ def _finalize_encoded_matrices(
         x_test_encoded=x_te_out,
         categorical_feature_names=tuple(present_cats),
     )
+

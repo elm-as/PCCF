@@ -140,3 +140,4 @@ class PipelineConfig:
             Fully initialized PipelineConfig.
         """
         return cls(paths=PathConfig.from_root(root_dir))
+

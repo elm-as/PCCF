@@ -101,3 +101,4 @@ Chaque exécution génère deux fichiers vérifiés dans `submissions/` :
 ---
 
 — **Elmas**, ElmasCore
+

@@ -46,3 +46,4 @@ def build_validated_submission_dataframe(
         val_config.id_column: test_ids.to_numpy(dtype=np.int64),
         val_config.target_column: np.round(predicted_probabilities, 6),
     })
+

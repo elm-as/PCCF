@@ -72,15 +72,7 @@ def _download_via_kagglehub(competition_slug: str, destination_dir: Path) -> tup
     Returns:
         Tuple of (train_csv_path, test_csv_path).
     """
-    try:
-        import kagglehub
-        downloaded_dir = Path(kagglehub.competition_download(competition_slug))
-    except Exception as exc:
-        raise RuntimeError(
-            f"Unable to download '{competition_slug}' via kagglehub. "
-            "Please configure ~/.kaggle/kaggle.json (or KAGGLE_USERNAME / KAGGLE_KEY) "
-            f"or place train.csv and test.csv inside '{destination_dir}'."
-        ) from exc
+    downloaded_dir = _invoke_kagglehub_download(competition_slug)
 
     for filename in ("train.csv", "test.csv", "sample_submission.csv"):
         source_file = downloaded_dir / filename
@@ -91,6 +83,34 @@ def _download_via_kagglehub(competition_slug: str, destination_dir: Path) -> tup
         raise RuntimeError(f"Downloaded archive in {downloaded_dir} did not contain train.csv and test.csv.")
 
     return destination_dir / "train.csv", destination_dir / "test.csv"
+
+
+def _invoke_kagglehub_download(competition_slug: str) -> Path:
+    """Resolve competition download via Python kagglehub or py -3.12 token bridge."""
+    import subprocess
+
+    try:
+        import kagglehub
+        return Path(kagglehub.competition_download(competition_slug))
+    except Exception:
+        cmd = [
+            "py",
+            "-3.12",
+            "-c",
+            f"import kagglehub; print(kagglehub.competition_download('{competition_slug}'))",
+        ]
+        proc = subprocess.run(cmd, capture_output=True, text=True, check=False)
+        if proc.returncode == 0 and proc.stdout.strip():
+            last_line = proc.stdout.strip().splitlines()[-1].strip()
+            return Path(last_line)
+
+        err_msg = proc.stderr.strip() or "Authentication or rules acceptance required."
+        raise RuntimeError(
+            f"Kaggle API blocked download of '{competition_slug}'.\n"
+            f"1) Accept competition rules at: https://www.kaggle.com/competitions/{competition_slug}/rules\n"
+            f"2) Or copy train.csv and test.csv into data/raw/.\n"
+            f"Details: {err_msg[-350:]}"
+        )
 
 
 def generate_synthetic_s6e11_dataset(
@@ -194,3 +214,4 @@ def _compute_additive_fraud_probability(rng: np.random.Generator, df: pd.DataFra
         + rng.normal(0.0, 0.40, size=len(df))
     )
     return 1.0 / (1.0 + np.exp(-continuous_logit))
+

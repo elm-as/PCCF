@@ -73,3 +73,4 @@ def _validate_target_distribution(target_series: pd.Series) -> None:
 
     if len(unique_vals) < 2:
         raise ValueError("Target column contains only a single class; ROC-AUC is undefined.")
+

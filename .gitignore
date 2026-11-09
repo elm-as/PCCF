@@ -3,6 +3,7 @@ __pycache__/
 *$py.class
 .venv/
 venv/
+data/*.csv
 data/raw/*.csv
 data/raw/*.parquet
 data/raw/*.zip

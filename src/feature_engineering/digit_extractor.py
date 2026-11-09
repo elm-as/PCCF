@@ -94,3 +94,4 @@ def _extract_leading_significant_digit(abs_values: np.ndarray) -> np.ndarray:
     normalized = np.floor(nz_vals / np.power(10.0, exponents)).astype(np.int64)
     leading[nonzero_mask] = np.clip(normalized, 1, 9)
     return leading
+

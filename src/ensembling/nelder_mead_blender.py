@@ -101,3 +101,4 @@ def _optimize_simplex_weights(
     best_w = np.maximum(result.x, 0.0)
     total = float(np.sum(best_w))
     return best_w / total if total > 1e-12 else init_weights
+

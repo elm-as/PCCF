@@ -75,3 +75,4 @@ def logits_to_probabilities(logits: np.ndarray) -> np.ndarray:
     """
     safe_logits = np.clip(logits, -30.0, 30.0)
     return 1.0 / (1.0 + np.exp(-safe_logits))
+

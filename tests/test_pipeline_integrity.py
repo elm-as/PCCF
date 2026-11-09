@@ -102,3 +102,4 @@ def test_submission_formatter_enforces_competition_schema() -> None:
 
     with pytest.raises(ValueError, match="NaN or infinite"):
         build_validated_submission_dataframe(ids, np.array([0.1, np.nan, 0.5]), val_cfg)
+
