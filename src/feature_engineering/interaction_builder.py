@@ -10,6 +10,7 @@ KNOWN_RISK_FLAG_COLUMNS: tuple[str, ...] = (
     "used_vpn",
     "ip_country_mismatch",
     "billing_shipping_mismatch",
+    "is_ai_generated_scam_attempt",
 )
 
 PREFERRED_CATEGORICAL_PAIRS: tuple[tuple[str, str], ...] = (
@@ -97,26 +98,29 @@ def _build_numerical_domain_columns(
         ]
 
     if present_flags:
-        flag_sum = df[present_flags].sum(axis=1).astype(np.int8)
+        numeric_flags = df[present_flags].replace({"True": 1, "False": 0, True: 1, False: 0}).astype(np.int8)
+        flag_sum = numeric_flags.sum(axis=1).astype(np.int8)
         created["total_risk_flags_count"] = flag_sum
         created["has_multiple_risk_flags"] = (flag_sum >= 2).astype(np.int8)
 
-    if "transaction_amount" in cols:
-        amt = np.maximum(df["transaction_amount"].to_numpy(dtype=np.float32), 0.0)
-        created["transaction_amount_log1p"] = pd.Series(
+    amount_col = "amount_usd" if "amount_usd" in cols else ("transaction_amount" if "transaction_amount" in cols else None)
+    if amount_col is not None:
+        amt = np.maximum(df[amount_col].to_numpy(dtype=np.float32), 0.0)
+        created[f"{amount_col}_log1p"] = pd.Series(
             np.log1p(amt).astype(np.float32), index=df.index
         )
-        if "avg_tx_amount_30d" in cols:
-            avg_amt = np.maximum(df["avg_tx_amount_30d"].to_numpy(dtype=np.float32), 1.0)
-            created["amount_to_30d_avg_ratio"] = pd.Series(
-                (amt / avg_amt).astype(np.float32), index=df.index
+        if "account_balance_usd" in cols:
+            bal = np.maximum(df["account_balance_usd"].to_numpy(dtype=np.float32), 1.0)
+            created["amount_to_balance_ratio"] = pd.Series(
+                (amt / bal).astype(np.float32), index=df.index
             )
 
-    if "merchant_risk_score" in cols and "ip_reputation_score" in cols:
+    if "merchant_risk_score" in cols and "velocity_score" in cols:
         m_risk = df["merchant_risk_score"].to_numpy(dtype=np.float32)
-        ip_risk = df["ip_reputation_score"].to_numpy(dtype=np.float32)
-        created["combined_merchant_ip_risk"] = pd.Series(
-            ((m_risk + ip_risk) * 0.5).astype(np.float32), index=df.index
+        vel = df["velocity_score"].to_numpy(dtype=np.float32)
+        created["combined_merchant_velocity_risk"] = pd.Series(
+            ((m_risk + vel) * 0.5).astype(np.float32), index=df.index
         )
 
     return created
+

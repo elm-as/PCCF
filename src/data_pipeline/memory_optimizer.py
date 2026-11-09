@@ -75,13 +75,18 @@ def build_optimized_dataset_bundle(
 
 
 def _partition_column_types(df: pd.DataFrame) -> tuple[tuple[str, ...], tuple[str, ...]]:
-    """Separate feature columns into categorical and numerical tuples."""
+    """Separate feature columns into categorical and numerical tuples.
+
+    Boolean flag columns are classified as numerical to preserve binary integer math.
+    """
     cat_list: list[str] = []
     num_list: list[str] = []
 
     for col in df.columns:
         dtype = df[col].dtype
-        if pd.api.types.is_object_dtype(dtype) or pd.api.types.is_string_dtype(dtype) or pd.api.types.is_bool_dtype(dtype):
+        if pd.api.types.is_bool_dtype(dtype):
+            num_list.append(col)
+        elif pd.api.types.is_object_dtype(dtype) or pd.api.types.is_string_dtype(dtype):
             cat_list.append(col)
         else:
             num_list.append(col)
@@ -122,3 +127,4 @@ def _downcast_numeric_series(series: pd.Series) -> pd.Series:
     if col_min >= np.iinfo(np.int16).min and col_max <= np.iinfo(np.int16).max:
         return series.astype(np.int16)
     return series.astype(np.int32)
+
