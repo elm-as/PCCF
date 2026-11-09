@@ -28,7 +28,7 @@ From 1,000,000 transactions to a cross-fitted, rank-logit ensemble without data 
 <td align="center"><h2>75</h2><sub>engineered features</sub></td>
 <td align="center"><h2>51</h2><sub>target-encoded features</sub></td>
 <td align="center"><h2>4</h2><sub>model paradigms</sub></td>
-<td align="center"><h2>0.94387</h2><sub>OOF ROC-AUC (Fast)</sub></td>
+<td align="center"><h2>0.94860</h2><sub>OOF ROC-AUC (5-Fold CV)</sub></td>
 </tr>
 </table>
 
@@ -205,13 +205,13 @@ $$\max_{\mathbf{w} \ge 0, \sum w_j = 1} \text{ROC-AUC}\left(\sum_{j=1}^M w_j z_{
 ========================================================================
 MODEL FAMILY               |    OOF ROC-AUC |  ENSEMBLE WEIGHT
 ------------------------------------------------------------------------
-spline_glm                 |       0.942536 |           0.5190
-lightgbm_shallow           |       0.942310 |           0.4810
-catboost_shallow           |       0.941526 |           0.0000
-xgboost_shallow            |       0.940739 |           0.0000
+spline_glm                 |       0.942718 |           0.0000
+lightgbm_shallow           |       0.948378 |           0.6239
+catboost_shallow           |       0.947932 |           0.3761
+xgboost_shallow            |       0.948021 |           0.0000
 ------------------------------------------------------------------------
-CONSERVATIVE LOGIT BLEND   |       0.943869 | [Private LB Safe]
-RANK-LOGIT FUSION BLEND    |       0.943864 |   [Public LB #1]
+CONSERVATIVE LOGIT BLEND   |       0.948592 | [Private LB Safe]
+RANK-LOGIT FUSION BLEND    |       0.948600 |   [Public LB #1]
 ========================================================================
 ```
 

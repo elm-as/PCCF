@@ -1,7 +1,7 @@
 # ELMAS.md — Charte de développement ElmasCore
 
 > Ce fichier est la signature d'un projet ElmasCore. Il définit les règles non négociables
-> à respecter par tout humain ou tout agent IA qui contribue à ce dépôt. Il doit être lu
+> à respecter par tout contributeur à ce dépôt. Il doit être lu
 > avant toute génération de code, toute refonte, tout ajout de dépendance.
 >
 > "From Data to Systems" — un projet ElmasCore se reconnaît à sa rigueur, pas à sa rapidité d'exécution.
