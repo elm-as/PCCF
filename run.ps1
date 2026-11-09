@@ -7,3 +7,4 @@ if (-not (Test-Path $pythonPath)) {
 }
 
 & $pythonPath -u main.py @args
+
