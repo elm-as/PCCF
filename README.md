@@ -25,10 +25,10 @@ From 1,000,000 transactions to a cross-fitted, rank-logit ensemble without data 
 <tr>
 <td align="center"><h2>699,960</h2><sub>train transactions</sub></td>
 <td align="center"><h2>299,984</h2><sub>test transactions</sub></td>
-<td align="center"><h2>75</h2><sub>engineered features</sub></td>
-<td align="center"><h2>4</h2><sub>model paradigms</sub></td>
-<td align="center"><h2>0.94860</h2><sub>OOF ROC-AUC (5-Fold CV)</sub></td>
-<td align="center"><h2>0.94835</h2><sub>Kaggle Public LB</sub></td>
+<td align="center"><h2>#55 / 1,290</h2><sub>Official Kaggle Rank</sub></td>
+<td align="center"><h2>Top 4.2%</h2><sub>Leaderboard Tier</sub></td>
+<td align="center"><h2>0.95330</h2><sub>Kaggle Public Score</sub></td>
+<td align="center"><h2>&plus;0.00495</h2><sub>Gain vs Baseline</sub></td>
 </tr>
 </table>
 
@@ -219,17 +219,18 @@ RANK-LOGIT FUSION BLEND    |       0.948600 |   [Public LB #1]
 
 ## Submission Export & Official Kaggle Validation
 
-Two submission files are generated automatically in `submissions/` and verified on the official Kaggle competition platform:
+Submissions generated in `submissions/` and evaluated on the official Kaggle S6E11 competition platform:
 
-| Submission File | Kaggle Ref | Strategy | Public LB Score | Status |
-|---|:---:|---|:---:|:---:|
-| **`submission_leaderboard_blend.csv`** | `#58176028` | Nelder-Mead Rank-Logit Fusion | **`0.94835`** | **Evaluated** |
-| **`submission_cv_conservative.csv`** | `#58176052` | Calibrated Conservative Bayesian Blend | **`0.94834`** | **Evaluated** |
-
-$$\Delta_{\text{CV} \to \text{Public LB}} = |0.94860 - 0.94835| = \mathbf{0.00025}$$
+| Submission File | Kaggle Ref | Strategy & Architecture | Public LB Score | Kaggle Rank | Status |
+|---|:---:|---|:---:|:---:|:---:|
+| **`submission_strike9_podium.csv`** | `#58189491` | Multi-Family Deep Stack Podium Backbone | **`0.95330`** | **Rank #55** (Top 4.2%) | **Active** |
+| **`submission_elmascore_consensus_podium.csv`** | `#58189608` | Multi-Consensus Logit Blend (Strike9 + AmanAtar + Sameer Cavg + WideLM) | **`0.95329`** | Top 4.5% | **Evaluated** |
+| **`submission_wide_lm_stack_blend.csv`** | `#58176278` | Wide Tabular LM + RealMLP + Deep GBDT Nelder-Mead | **`0.95284`** | Rank #157 | **Evaluated** |
+| **`submission_leaderboard_blend.csv`** | `#58176028` | Local Nelder-Mead Rank-Logit Fusion | **`0.94835`** | Rank #624 | **Evaluated** |
+| **`submission_cv_conservative.csv`** | `#58176052` | Calibrated Conservative Bayesian Blend | **`0.94834`** | - | **Evaluated** |
 
 > [!NOTE]
-> The minute gap of $0.00025$ between the 5-fold cross-validated out-of-fold AUC and the actual Kaggle Public Leaderboard confirms complete absence of data leakage and zero overfitting on synthetic artifacts.
+> The progression from the local shallow tree baseline (`0.94835`, Rank #624) to the Multi-Family Deep Stack (`0.95330`, Rank #55) achieved a **+0.00495 (+49.5 bps)** gain on the Kaggle public test holdout, placing ElmasCore in the **Top 4.2%** of 1,290 teams worldwide.
 
 ---
 
@@ -300,9 +301,10 @@ PCCF/
 - [x] 100% leak-free cross-fitted Bayesian target encoder
 - [x] 4 shallow model families (Spline-GLM, LightGBM, CatBoost, XGBoost)
 - [x] Nelder-Mead Rank-Logit blending
-- [ ] Incorporate RealMLP neural net OOF artifact bank
-- [ ] Add Wide Linear representations
-- [ ] Achieve $\ge 0.95335+$ on the Public & Private Leaderboards
+- [x] Incorporate Wide Tabular LM + RealMLP neural net representations
+- [x] Multi-Family Deep Stack Podium Backbone integration
+- [x] Break into Top 5% of Kaggle Leaderboard (Rank #55 / 1,290, Score **0.95330**)
+- [ ] Push to Top 10 with custom pseudo-labeling and localized boundary tuning
 
 ---
 

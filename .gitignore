@@ -19,5 +19,6 @@ submissions/*.csv
 .env
 kaggle.json
 .pytest_cache/
+artifacts/external/
 Review competition terms and condit.txt
 
