@@ -25,10 +25,10 @@ From 1,000,000 transactions to a cross-fitted, rank-logit ensemble without data 
 <tr>
 <td align="center"><h2>699,960</h2><sub>train transactions</sub></td>
 <td align="center"><h2>299,984</h2><sub>test transactions</sub></td>
-<td align="center"><h2>#55 / 1,290</h2><sub>Official Kaggle Rank</sub></td>
-<td align="center"><h2>Top 4.2%</h2><sub>Leaderboard Tier</sub></td>
-<td align="center"><h2>0.95330</h2><sub>Kaggle Public Score</sub></td>
-<td align="center"><h2>&plus;0.00495</h2><sub>Gain vs Baseline</sub></td>
+<td align="center"><h2>#26 / 1,294</h2><sub>Official Kaggle Rank</sub></td>
+<td align="center"><h2>Top 2.0%</h2><sub>Leaderboard Tier</sub></td>
+<td align="center"><h2>0.95331</h2><sub>Kaggle Public Score</sub></td>
+<td align="center"><h2>&plus;0.00496</h2><sub>Gain vs Baseline</sub></td>
 </tr>
 </table>
 
@@ -223,14 +223,14 @@ Submissions generated in `submissions/` and evaluated on the official Kaggle S6E
 
 | Submission File | Kaggle Ref | Strategy & Architecture | Public LB Score | Kaggle Rank | Status |
 |---|:---:|---|:---:|:---:|:---:|
-| **`submission_strike9_podium.csv`** | `#58189491` | Multi-Family Deep Stack Podium Backbone | **`0.95330`** | **Rank #55** (Top 4.2%) | **Active** |
-| **`submission_elmascore_consensus_podium.csv`** | `#58189608` | Multi-Consensus Logit Blend (Strike9 + AmanAtar + Sameer Cavg + WideLM) | **`0.95329`** | Top 4.5% | **Evaluated** |
-| **`submission_wide_lm_stack_blend.csv`** | `#58176278` | Wide Tabular LM + RealMLP + Deep GBDT Nelder-Mead | **`0.95284`** | Rank #157 | **Evaluated** |
+| **`submission_elmascore_v13_podium_sovereign.csv`** | `#58191167` | 5-Way Multi-Foundation Consensus (Strike9 + GPT2-LM + AmanAtar + Sameer + TabPFN) | **`0.95331`** | **Rank #26** (Top 2.0%) | **Active** |
+| **`submission_elmascore_v12_frontier.csv`** | `#58191106` | Multi-Consensus Frontier (Strike9 + GPT2-LM + AmanAtar + Sameer) | **`0.95331`** | Rank #29 | **Evaluated** |
+| **`submission_strike9_podium.csv`** | `#58189491` | Multi-Family Deep Stack Podium Backbone | **`0.95330`** | Rank #55 | **Evaluated** |
+| **`submission_wide_lm_stack_blend.csv`** | `#58176278` | Wide Tabular LM + RealMLP + Deep GBDT Nelder-Mead | **`0.95284`** | Rank #146 | **Evaluated** |
 | **`submission_leaderboard_blend.csv`** | `#58176028` | Local Nelder-Mead Rank-Logit Fusion | **`0.94835`** | Rank #624 | **Evaluated** |
-| **`submission_cv_conservative.csv`** | `#58176052` | Calibrated Conservative Bayesian Blend | **`0.94834`** | - | **Evaluated** |
 
 > [!NOTE]
-> The progression from the local shallow tree baseline (`0.94835`, Rank #624) to the Multi-Family Deep Stack (`0.95330`, Rank #55) achieved a **+0.00495 (+49.5 bps)** gain on the Kaggle public test holdout, placing ElmasCore in the **Top 4.2%** of 1,290 teams worldwide.
+> The progression from the local shallow tree baseline (`0.94835`, Rank #624) to the Multi-Foundation Consensus (`0.95331`, Rank #26) achieved a **+0.00496 (+49.6 bps)** gain on the Kaggle public test holdout, placing ElmasCore in the **Top 2.0%** of 1,294 teams worldwide.
 
 ---
 
